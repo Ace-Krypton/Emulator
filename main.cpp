@@ -33,6 +33,7 @@ auto main() -> int {
                 is_running = false;
                 break;
             }
+
             default : std::cout << "Something went wrong" << std::endl;
         }
         ++_program_counter;
