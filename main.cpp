@@ -1,44 +1,27 @@
 #include <iostream>
 
+struct CPU {
+public:
+    /* Registers */
+    __uint8_t  AC;      //Accumulator
+    __uint8_t  SP;      //Stack Pointer
+    __uint8_t  X;       //X Register
+    __uint8_t  Y;       //Y Register
+    __uint8_t  SR;      //Status Register [NV-BDIZC]
+    __uint16_t PC;      //Program Counter
+
+    /* Status Flags */
+    __uint8_t N : 1;    //Negative
+    __uint8_t V : 1;    //Overflow
+    __uint8_t G : 1;    //Ignored
+    __uint8_t B : 1;    //Break
+    __uint8_t D : 1;    //Decimal
+    __uint8_t I : 1;    //Interrupt (IRQ disable)
+    __uint8_t Z : 1;    //Zero
+    __uint8_t C : 1;    //Carry
+};
+
 auto main() -> int {
-    constexpr __uint16_t op_nop   = 0x00;
-    constexpr __uint16_t op_halt  = 0x01;
-    constexpr __uint16_t op_alert = 0x02;
-
-    using _tvm_instruction = __uint16_t;
-    using _ptr_tvm_instruction = _tvm_instruction*;
-    using _tvm_instruction_handler = void (*)();
-    using _t_instruction_set [[maybe_unused]] = _tvm_instruction_handler[0x3];
-
-    _tvm_instruction data[0x3] {op_nop, op_halt, op_alert};
-    _ptr_tvm_instruction _program_counter = data;
-
-    bool is_running = true;
-
-    std::cout << "Starting virtual program" << std::endl;
-    while (is_running) {
-        switch (*_program_counter) {
-            case op_nop : {
-                std::cout << "nop" << std::endl;
-                break;
-            }
-
-            case op_alert : {
-                std::cout << "alert" << std::endl;
-                break;
-            }
-
-            case op_halt : {
-                std::cout << "halt" << std::endl;
-                is_running = false;
-                break;
-            }
-
-            default : std::cout << "Something went wrong" << std::endl;
-        }
-        ++_program_counter;
-    }
-    std::cout << "Ending virtual program" << std::endl;
 
     return 0x0;
 }
