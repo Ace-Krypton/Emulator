@@ -13,6 +13,15 @@ public:
     auto mem_reset() -> void {
         std::memset(memory, 0x0, sizeof(memory));
     }
+
+    /**
+     * \brief Overloads the '[]' operator for memory
+     * @param index is the program counter's value
+     * @return memory[index] if the condition is met
+     */
+    auto operator[](std::size_t index) -> const __uint8_t& {
+        return (index >= MEMORY_SIZE) ? throw std::out_of_range("index out of bounds") : memory[index];
+    }
 };
 
 class CPU {
@@ -40,7 +49,7 @@ public:
      *      assigning decimal flag to 0, and assigning memory to 0
      * @param mem is a instance of Memory object which will be used for resetting memory
      */
-    auto reset(Memory mem) -> void {
+    auto reset(Memory& mem) -> void {
         PC = 0xFFFC;
         __uint16_t reset_vector = (__uint16_t) read_memory(PC) |
                 ((__uint16_t) read_memory(PC + 1) << 8);
@@ -50,7 +59,11 @@ public:
         mem.mem_reset();
     }
 
-    static auto read_memory(uint16_t address) -> __uint8_t {
+    auto fetch(__uint32_t& cycles, Memory& memory) -> __uint8_t {
+        __uint8_t instruction = memory[PC];
+    }
+
+    static auto read_memory(__uint16_t address) -> __uint8_t {
         // TODO: Add code to read a byte from memory
         return 0x0;
     }
