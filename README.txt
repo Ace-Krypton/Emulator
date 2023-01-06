@@ -7,7 +7,8 @@ Features
     Emulates the following features of the 6502 processor:
         Registers (Accumulator, Stack Pointer, X Register, Y Register, Status Register, Program Counter)
         Status flags (Negative, Overflow, Break, Decimal, Interrupt, Zero, Carry)
-        Instructions (LDA, LDX, LDY, STA, STX, STY, ADC, SBC, AND, EOR, ORA, BIT, CMP, CPX, CPY, DEC, DEX, DEY, INC, INX, INY, JMP, JSR, RTS, RTI, LSR, ROL, ROR, ASL, NOP, BRK, PHP, PLP, PHA, PLA)
+        Instructions (All of them)
+        
     Provides a Memory class for managing the memory of the emulated system
     Provides a CPU class for emulating the processor
 
