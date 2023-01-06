@@ -114,7 +114,7 @@ public:
 
     /**
      * \brief Sets false to Z (Zero) flag, if accumulator is equals to 0
-     *      also sets the N(Negative) flag, if the most significant bit (bit 7) of the accumulator is set
+     *      also sets the N (Negative) flag, if the most significant bit (bit 7) of the accumulator is set
      */
     auto zero_out() -> void {
         Z = (AC == 0x0);
