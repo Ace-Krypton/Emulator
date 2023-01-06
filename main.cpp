@@ -45,7 +45,7 @@ public:
     [[maybe_unused]] __uint8_t C : 0x1;    //Carry
 
     /**
-     * \brief Resets 6502 processor with assigning program counter to certain address,
+     * \brief Resets the processor with assigning program counter to certain address,
      *      assigning decimal flag to 0, and assigning memory to 0
      * @param mem Instance of Memory object which will be used for resetting memory
      */
@@ -62,11 +62,11 @@ public:
      * @param ... (Variadic function)
      */
     [[noreturn]] static auto fatal_error(char const * format, ...) -> void {
-        fflush(stdout);
-        va_list var_args;
+        std::fflush(stdout);
+        std::va_list var_args;
         va_start(var_args, format);
-        vfprintf(stderr, format, var_args);
-        exit(0x1);
+        std::vfprintf(stderr, format, var_args);
+        std::exit(0x1);
     }
 
     /**
@@ -126,7 +126,7 @@ public:
      * @param address Memory address
      * @return Instruction
      */
-    static auto read_memory(__uint32_t& cycles, __uint8_t address ,Memory& memory) -> __uint8_t {
+    static auto read_memory(__uint32_t& cycles, __uint8_t address, Memory& memory) -> __uint8_t {
         __uint8_t instruction = memory[address];
         cycles--;
         return instruction;
@@ -134,6 +134,7 @@ public:
 };
 
 auto main() -> int {
+    /* --------------------------------- START TEST --------------------------------- */
     Memory memory;
     CPU cpu { };
     cpu.reset(memory);
@@ -143,5 +144,7 @@ auto main() -> int {
     memory[0x0042] = 0x84;
 
     cpu.execute(0x3, memory);
+    /* ---------------------------------- END TEST ---------------------------------- */
+
     return 0x0;
 }
