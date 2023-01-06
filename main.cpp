@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cstring>
 
 struct Memory {
 private:
@@ -11,12 +10,12 @@ public:
      * \brief Assigns memory to 0 in other words just resets it
      */
     auto mem_reset() -> void {
-        std::memset(memory, 0x0, sizeof(memory));
+        std::fill(std::begin(memory), std::end(memory), 0x0);
     }
 
     /**
      * \brief Overloads the '[]' operator for memory
-     * @param index is the program counter's value
+     * @param index Program counter's value
      * @return memory[index] if the condition is met
      */
     auto operator[](std::size_t index) -> const __uint8_t& {
@@ -47,7 +46,7 @@ public:
     /**
      * \brief Resets 6502 processor with assigning program counter to certain address,
      *      assigning decimal flag to 0, and assigning memory to 0
-     * @param mem is a instance of Memory object which will be used for resetting memory
+     * @param mem Instance of Memory object which will be used for resetting memory
      */
     auto reset(Memory& mem) -> void {
         PC = 0xFFFC;
@@ -59,10 +58,35 @@ public:
         mem.mem_reset();
     }
 
+    /**
+     * \brief Fetches an instruction from memory
+     * @param cycles Number of Cycles
+     * @param memory Instance of Memory object for using memory array
+     * @return Program counter's value in memory array
+     */
     auto fetch(__uint32_t& cycles, Memory& memory) -> __uint8_t {
         __uint8_t instruction = memory[PC];
+        PC++;
+        cycles--;
+        return instruction;
     }
 
+    /**
+     * \brief Executes the instructions from memory
+     * @param cycles Number of Cycles
+     * @param memory Instance of Memory object for using memory array
+     */
+    auto execute(__uint32_t cycles, Memory& memory) -> void {
+        while (cycles > 0) {
+
+        }
+    }
+
+    /**
+     * \brief Reads memory from address
+     * @param address Memory address
+     * @return 0 for now
+     */
     static auto read_memory(__uint16_t address) -> __uint8_t {
         // TODO: Add code to read a byte from memory
         return 0x0;
