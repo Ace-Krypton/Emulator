@@ -1,19 +1,20 @@
-Virtual Machine Emulator
+Emulator
 
-This program is a simple emulator for a virtual machine that executes a set of machine code instructions.
+This code is an implementation of a CPU emulator for the 6502 processor, which was used in a variety of early computers and gaming systems such as the Atari 2600 and the Nintendo Entertainment System.
 
+Features
 
-Brief
+    Emulates the following features of the 6502 processor:
+        Registers (Accumulator, Stack Pointer, X Register, Y Register, Status Register, Program Counter)
+        Status flags (Negative, Overflow, Break, Decimal, Interrupt, Zero, Carry)
+        Instructions (LDA, LDX, LDY, STA, STX, STY, ADC, SBC, AND, EOR, ORA, BIT, CMP, CPX, CPY, DEC, DEX, DEY, INC, INX, INY, JMP, JSR, RTS, RTI, LSR, ROL, ROR, ASL, NOP, BRK, PHP, PLP, PHA, PLA)
+    Provides a Memory class for managing the memory of the emulated system
+    Provides a CPU class for emulating the processor
 
-The program reads a list of machine code instructions from a constant array defined in the source code. 
-It then executes these instructions one by one, calling the appropriate instruction handler function for each opcode.
+Requirements
 
-
-The program supports the following opcodes:
-
-    Nop: No operation. This instruction does nothing.
-    Halt: Halt execution. This instruction stops the virtual machine.
-    Alert: Alert. This instruction prints a message to the console.
+    A C++ compiler with support for C++11
+    The cstdarg library
    
    
 License
