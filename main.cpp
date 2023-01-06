@@ -88,29 +88,37 @@ public:
      * @param memory Instance of Memory object for using memory array
      */
     auto execute(__uint32_t cycles, Memory& memory) -> void {
-        while (cycles > 0) {
+        while (cycles > 0x0) {
             __uint8_t instructions = fetch(cycles, memory);
 
             switch (instructions) {
-                case 0xA5 : {
+                /* Load Accumulator with Memory (LDA) */
+                case 0xA5 : {   //Zero-page LDA
                     __uint8_t zero_page = fetch(cycles, memory);
                     AC = read_memory(cycles, zero_page ,memory);
-                    Z = (AC == 0x0);
-                    N = (AC & 0x80) != 0x0;
+                    zero_out();
                     break;
                 }
 
-                case 0xA9 : {
+                case 0xA9 : {   //Immediate LDA
                     __uint8_t byte = fetch(cycles, memory);
                     AC = byte;
-                    Z = (AC == 0x0);
-                    N = (AC & 0x80) != 0x0;
+                    zero_out();
                     break;
                 }
 
                 default : fatal_error("Error occurred");
             }
         }
+    }
+
+    /**
+     * \brief Sets false to Z (Zero) flag, if accumulator is equals to 0
+     *      also sets the N(Negative) flag, if the most significant bit (bit 7) of the accumulator is set
+     */
+    auto zero_out() -> void {
+        Z = (AC == 0x0);
+        N = (AC & 0x80) != 0x0;
     }
 
     /**
@@ -129,9 +137,11 @@ auto main() -> int {
     Memory memory;
     CPU cpu { };
     cpu.reset(memory);
+
     memory[0xFFFC] = 0xA5;
     memory[0xFFFD] = 0x42;
     memory[0x0042] = 0x84;
-    cpu.execute(0x2, memory);
+
+    cpu.execute(0x3, memory);
     return 0x0;
 }
