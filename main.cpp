@@ -203,6 +203,18 @@ public:
 };
 
 /* --------------------------------- START TEST --------------------------------- */
+TEST_F(M_TEST, ImmediateLDA) {
+    //Given:
+    memory[0xFFFC] = 0xA9;
+    memory[0xFFFD] = 0x84;
+
+    //When:
+    cpu.execute(0x2, memory);
+
+    //Then:
+    EXPECT_EQ(cpu.AC, 0x84);
+}
+
 TEST_F(M_TEST, ZeroPageLDA) {
     //Given:
     memory[0xFFFC] = 0xA5;
@@ -211,18 +223,6 @@ TEST_F(M_TEST, ZeroPageLDA) {
 
     //When:
     cpu.execute(0x3, memory);
-
-    //Then:
-    EXPECT_EQ(cpu.AC, 0x84);
-}
-
-TEST_F(M_TEST, ImmediateLDA) {
-    //Given:
-    memory[0xFFFC] = 0xA9;
-    memory[0xFFFD] = 0x84;
-
-    //When:
-    cpu.execute(0x2, memory);
 
     //Then:
     EXPECT_EQ(cpu.AC, 0x84);
