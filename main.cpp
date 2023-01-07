@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdarg>
+#include <arpa/inet.h>
 
 struct Memory {
 private:
@@ -70,7 +71,7 @@ public:
     }
 
     /**
-     * \brief Fetches an instruction from memory
+     * \brief Fetches an instruction from memory for 8 bits (1 byte)
      * @param cycles Number of Cycles
      * @param memory Instance of Memory object for using memory array
      * @return Program counter's value in memory array
@@ -80,6 +81,24 @@ public:
         PC++;
         cycles--;
         return instruction;
+    }
+
+    /**
+     * \brief Fetches an instruction from memory for 16 bits (2 bytes)
+     * @param cycles Number of Cycles
+     * @param memory Instance of Memory object for using memory array
+     * @return Program counter's value in memory array and make sure that it will be in little endian
+     */
+    auto fetch_two(__uint32_t& cycles, Memory& memory) -> __uint16_t {
+        __uint16_t instruction = memory[PC];
+        PC++;
+        cycles--;
+
+        instruction |= (memory[PC] << 0x8);
+        PC++;
+        cycles -= 2;
+
+        return ntohs(instruction);
     }
 
     /**
@@ -96,6 +115,22 @@ public:
                 case 0xA5 : {   //Zero-page LDA
                     __uint8_t zero_page = fetch(cycles, memory);
                     AC = read_memory(cycles, zero_page ,memory);
+                    zero_out();
+                    break;
+                }
+
+                case 0xB5 : {   //Zero-page-X LDA
+                    __uint8_t zero_page = fetch(cycles, memory);
+                    zero_page += X;
+                    cycles--;
+                    AC = read_memory(cycles, zero_page ,memory);
+                    zero_out();
+                    break;
+                }
+
+                case 0xAD : {   //Absolute LDA
+                    __uint16_t byte = fetch_two(cycles, memory);
+                    AC = byte;
                     zero_out();
                     break;
                 }
