@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdarg>
+#include <cstring>
 #include <arpa/inet.h>
 
 struct Memory {
@@ -12,7 +13,7 @@ public:
      * \brief Assigns memory to 0 in other words just resets it
      */
     auto mem_reset() -> void {
-        std::fill(std::begin(memory), std::end(memory), 0x0);
+        std::memset(memory, 0x0, MEMORY_SIZE);
     }
 
     /**
@@ -31,9 +32,7 @@ public:
      * @param cycles Reference to a 32-bit integer that represents the number of cycles taken by the operation
      */
     auto write_two(__uint16_t value, __uint32_t address, __uint32_t& cycles) -> void {
-        memory[address] = (value & 0xFF);
-        memory[address] = (value >> 0x8);
-
+        std::memcpy(memory + address, &value, sizeof(value));
         cycles -= 0x2;
     }
 };
@@ -189,18 +188,29 @@ public:
     }
 };
 
+#if something
 auto main() -> int {
     /* --------------------------------- START TEST --------------------------------- */
     Memory memory;
     CPU cpu { };
     cpu.reset(memory);
 
-    memory[0xFFFC] = 0xA5;
-    memory[0xFFFD] = 0x42;
-    memory[0x0042] = 0x84;
+    memory[0xFFFC] = 0x20;
+    memory[0xFFFD] = 0x22;
+    memory[0xFFFE] = 0x22;
+    memory[0x2222] = 0xA9;
+    memory[0x2223] = 0x34;
 
-    cpu.execute(0x3, memory);
+    cpu.execute(0x9, memory);
     /* ---------------------------------- END TEST ---------------------------------- */
 
     return 0x0;
+}
+#endif
+
+#include <gtest/gtest.h>
+
+TEST(MultiplicationTest, BasicAssertions) {
+    EXPECT_STRNE("hello", "world");
+    EXPECT_EQ(7 * 6, 42);
 }
