@@ -23,6 +23,19 @@ public:
     auto operator[](std::size_t index) -> __uint8_t& {
         return (index >= MEMORY_SIZE) ? throw std::out_of_range("index out of bounds") : memory[index];
     }
+
+    /**
+     * \brief Function takes a 16-bit value and writes it to a specified memory address
+     * @param value 16-bit value to be written to memory
+     * @param address Memory address where the value should be written
+     * @param cycles Reference to a 32-bit integer that represents the number of cycles taken by the operation
+     */
+    auto write_two(__uint16_t value, __uint32_t address, __uint32_t& cycles) -> void {
+        memory[address] = (value & 0xFF);
+        memory[address] = (value >> 0x8);
+
+        cycles -= 0x2;
+    }
 };
 
 class CPU {
@@ -52,7 +65,7 @@ public:
      */
     auto reset(Memory& mem) -> void {
         PC = 0xFFFC;
-        D = 0x0;
+        D  = 0x0;
         SP = 0xFF;
         mem.mem_reset();
     }
@@ -96,7 +109,7 @@ public:
 
         instruction |= (memory[PC] << 0x8);
         PC++;
-        cycles -= 2;
+        cycles -= 0x2;
 
         return ntohs(instruction);
     }
@@ -133,6 +146,14 @@ public:
                     AC = byte;
                     zero_out();
                     break;
+                }
+
+                case 0x20 : {   //JSR Jump To Subroutine
+                    __uint16_t sub_address = fetch_two(cycles, memory);
+                    memory.write_two(PC - 0x1, SP, cycles);
+                    PC = sub_address;
+                    SP++;
+                    cycles--;
                 }
 
                 case 0xA9 : {   //Immediate LDA
