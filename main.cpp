@@ -209,10 +209,16 @@ TEST_F(M_TEST, ImmediateLDA) {
     memory[0xFFFD] = 0x84;
 
     //When:
+    CPU clone { };
     cpu.execute(0x2, memory);
 
     //Then:
     EXPECT_EQ(cpu.AC, 0x84);
+    EXPECT_EQ(cpu.C, clone.C);
+    EXPECT_EQ(cpu.I, clone.I);
+    EXPECT_EQ(cpu.D, clone.D);
+    EXPECT_EQ(cpu.B, clone.B);
+    EXPECT_EQ(cpu.V, clone.V);
 }
 
 TEST_F(M_TEST, ZeroPageLDA) {
@@ -222,10 +228,16 @@ TEST_F(M_TEST, ZeroPageLDA) {
     memory[0x0042] = 0x84;
 
     //When:
+    CPU clone { };
     cpu.execute(0x3, memory);
 
     //Then:
     EXPECT_EQ(cpu.AC, 0x84);
+    EXPECT_EQ(cpu.C, clone.C);
+    EXPECT_EQ(cpu.I, clone.I);
+    EXPECT_EQ(cpu.D, clone.D);
+    EXPECT_EQ(cpu.B, clone.B);
+    EXPECT_EQ(cpu.V, clone.V);
 }
 
 TEST_F(M_TEST, ZeroPageXLDA) {
@@ -236,9 +248,15 @@ TEST_F(M_TEST, ZeroPageXLDA) {
     memory[0x0035] = 0x85;
 
     //When:
+    CPU clone { };
     cpu.execute(0x4, memory);
 
     //Then:
     EXPECT_EQ(cpu.AC, 0x85);
+    EXPECT_EQ(cpu.C, clone.C);
+    EXPECT_EQ(cpu.I, clone.I);
+    EXPECT_EQ(cpu.D, clone.D);
+    EXPECT_EQ(cpu.B, clone.B);
+    EXPECT_EQ(cpu.V, clone.V);
 }
 /* ---------------------------------- END TEST ---------------------------------- */
