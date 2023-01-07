@@ -2,6 +2,7 @@
 #include <cstdarg>
 #include <cstring>
 #include <arpa/inet.h>
+#include <gtest/gtest.h>
 
 struct Memory {
 private:
@@ -188,29 +189,32 @@ public:
     }
 };
 
-#if something
 auto main() -> int {
     /* --------------------------------- START TEST --------------------------------- */
     Memory memory;
     CPU cpu { };
     cpu.reset(memory);
 
-    memory[0xFFFC] = 0x20;
-    memory[0xFFFD] = 0x22;
-    memory[0xFFFE] = 0x22;
-    memory[0x2222] = 0xA9;
-    memory[0x2223] = 0x34;
+    memory[0xFFFC] = 0xA5;
+    memory[0xFFFD] = 0x42;
+    memory[0x0042] = 0x84;
 
-    cpu.execute(0x9, memory);
+    cpu.execute(0x3, memory);
     /* ---------------------------------- END TEST ---------------------------------- */
 
     return 0x0;
 }
-#endif
 
-#include <gtest/gtest.h>
+TEST(CPUTest, TestExecute) {
+    Memory memory;
+    CPU cpu { };
+    cpu.reset(memory);
 
-TEST(MultiplicationTest, BasicAssertions) {
-    EXPECT_STRNE("hello", "world");
-    EXPECT_EQ(7 * 6, 42);
+    memory[0xFFFC] = 0xA5;
+    memory[0xFFFD] = 0x42;
+    memory[0x0042] = 0x84;
+
+    cpu.execute(0x3, memory);
+
+    EXPECT_EQ(cpu.AC, 0x84);
 }
