@@ -14,9 +14,7 @@ Features
 
 Requirements
 
-    A C++ compiler with support for C++11
-    The cstdarg library
-   
+    A C++ compiler with support for C++20
    
 License
 
