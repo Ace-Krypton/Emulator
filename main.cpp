@@ -230,15 +230,15 @@ TEST_F(M_TEST, ImmediateLDA) {
 
 TEST_F(M_TEST, ZeroPageXLDA) {
     //Given:
-    cpu.X = 0xA;
+    cpu.X = 0x5;
     memory[0xFFFC] = 0xB5;
-    memory[0xFFFD] = 0x37;
-    memory[0x0042] = 0x84;
+    memory[0xFFFD] = 0x30;
+    memory[0x0035] = 0x85;
 
     //When:
-    cpu.execute(0x3, memory);
+    cpu.execute(0x4, memory);
 
     //Then:
-    EXPECT_EQ(cpu.AC, 0x84);
+    EXPECT_EQ(cpu.AC, 0x85);
 }
 /* ---------------------------------- END TEST ---------------------------------- */
