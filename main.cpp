@@ -189,8 +189,8 @@ public:
     }
 };
 
-auto main() -> int {
-    /* --------------------------------- START TEST --------------------------------- */
+/* --------------------------------- START TEST --------------------------------- */
+TEST(ZeroPageLDA, TestExecute) {
     Memory memory;
     CPU cpu { };
     cpu.reset(memory);
@@ -200,21 +200,6 @@ auto main() -> int {
     memory[0x0042] = 0x84;
 
     cpu.execute(0x3, memory);
-    /* ---------------------------------- END TEST ---------------------------------- */
-
-    return 0x0;
-}
-
-TEST(CPUTest, TestExecute) {
-    Memory memory;
-    CPU cpu { };
-    cpu.reset(memory);
-
-    memory[0xFFFC] = 0xA5;
-    memory[0xFFFD] = 0x42;
-    memory[0x0042] = 0x84;
-
-    cpu.execute(0x3, memory);
-
     EXPECT_EQ(cpu.AC, 0x84);
 }
+/* ---------------------------------- END TEST ---------------------------------- */
