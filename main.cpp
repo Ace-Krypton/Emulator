@@ -41,12 +41,12 @@ public:
 class CPU {
 public:
     /* Registers */
-    [[maybe_unused]] __uint8_t  AC;      //Accumulator
-    [[maybe_unused]] __uint8_t  SP;      //Stack Pointer
-    [[maybe_unused]] __uint8_t  X;       //X Register
-    [[maybe_unused]] __uint8_t  Y;       //Y Register
-    [[maybe_unused]] __uint8_t  SR;      //Status Register [NV-BDIZC]
-    [[maybe_unused]] __uint16_t PC;      //Program Counter
+    [[maybe_unused]] __uint8_t  AC;        //Accumulator
+    [[maybe_unused]] __uint8_t  SP;        //Stack Pointer
+    [[maybe_unused]] __uint8_t  X;         //X Register
+    [[maybe_unused]] __uint8_t  Y;         //Y Register
+    [[maybe_unused]] __uint8_t  SR;        //Status Register [NV-BDIZC]
+    [[maybe_unused]] __uint16_t PC;        //Program Counter
 
     /* Status Flags */
     [[maybe_unused]] __uint8_t N : 0x1;    //Negative
@@ -148,19 +148,20 @@ public:
                     break;
                 }
 
+                case 0xA9 : {   //Immediate LDA
+                    __uint8_t byte = fetch(cycles, memory);
+                    AC = byte;
+                    zero_out();
+                    break;
+                }
+
+                /* Jump To Subroutine (JSR) */
                 case 0x20 : {   //JSR Jump To Subroutine
                     __uint16_t sub_address = fetch_two(cycles, memory);
                     memory.write_two(PC - 0x1, SP, cycles);
                     PC = sub_address;
                     SP++;
                     cycles--;
-                }
-
-                case 0xA9 : {   //Immediate LDA
-                    __uint8_t byte = fetch(cycles, memory);
-                    AC = byte;
-                    zero_out();
-                    break;
                 }
 
                 default : fatal_error("Error occurred");
@@ -189,12 +190,20 @@ public:
     }
 };
 
-/* --------------------------------- START TEST --------------------------------- */
-TEST(ZeroPageLDA, TestExecute) {
+class M_TEST : public testing::Test {
+public:
     Memory memory;
     CPU cpu { };
-    cpu.reset(memory);
 
+    void SetUp() override {
+        cpu.reset(memory);
+    }
+
+    ~M_TEST() override = default;
+};
+
+/* --------------------------------- START TEST --------------------------------- */
+TEST_F(M_TEST, ZeroPageLDA) {
     memory[0xFFFC] = 0xA5;
     memory[0xFFFD] = 0x42;
     memory[0x0042] = 0x84;
