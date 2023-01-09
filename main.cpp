@@ -223,12 +223,13 @@ TEST_F(M_TEST, ImmediateLDA) {
 
 TEST_F(M_TEST, AbsoluteLDA) {
     //Given:
-    memory[0xFFFC] = 0xAD;
-    memory[0xFFFD] = 0x84;
+    memory[0xFFFC] = 0xA5;
+    memory[0xFFFD] = 0x42;
+    memory[0x0042] = 0x84;
 
     //When:
     CPU _default { };
-    cpu.execute(0x4, memory);
+    cpu.execute(0x3, memory);
 
     //Then:
     EXPECT_EQ(cpu.AC, 0x84);
