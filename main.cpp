@@ -75,7 +75,7 @@ public:
      * @param format Type
      * @param ... (Variadic function)
      */
-    [[noreturn]] static auto fatal_error(char const * format, ...) -> void {
+    [[noreturn]] static auto fatal_error(char const * format, ...) noexcept ->  void {
         std::fflush(stdout);
         std::va_list var_args;
         va_start(var_args, format);
@@ -223,7 +223,7 @@ TEST_F(M_TEST, ImmediateLDA) {
 
 TEST_F(M_TEST, AbsoluteLDA) {
     //Given:
-    memory[0xFFFC] = 0xA5;
+    memory[0xFFFC] = 0xAD;
     memory[0xFFFD] = 0x42;
     memory[0x0042] = 0x84;
 
