@@ -118,8 +118,11 @@ public:
      * \brief Executes the instructions from memory
      * @param cycles Number of Cycles
      * @param memory Instance of Memory object for using memory array
+     * @return Number of cycles that were used
      */
-    auto execute(__uint32_t cycles, Memory& memory) -> void {
+    auto execute(__uint32_t cycles, Memory& memory) -> __uint32_t {
+        const __uint32_t cycles_before = cycles;
+
         while (cycles > 0x0) {
             __uint8_t instructions = fetch(cycles, memory);
 
@@ -160,12 +163,13 @@ public:
                     __uint16_t sub_address = fetch_two(cycles, memory);
                     memory.write_two(PC - 0x1, SP, cycles);
                     PC = sub_address;
-                    SP++;
+                    SP += 2;
                     cycles--;
                 }
 
                 default : fatal_error("Error occurred");
             }
+            return cycles_before - cycles;
         }
     }
 
@@ -210,10 +214,13 @@ TEST_F(M_TEST, ImmediateLDA) {
 
     //When:
     CPU _default { };
-    cpu.execute(0x2, memory);
+    __uint32_t executed = cpu.execute(0x2, memory);
 
     //Then:
+    EXPECT_TRUE(cpu.N);
+    EXPECT_FALSE(cpu.Z);
     EXPECT_EQ(cpu.AC, 0x84);
+    EXPECT_EQ(executed, 0x2);
     EXPECT_EQ(cpu.C, _default.C);
     EXPECT_EQ(cpu.I, _default.I);
     EXPECT_EQ(cpu.D, _default.D);
@@ -229,10 +236,11 @@ TEST_F(M_TEST, AbsoluteLDA) {
 
     //When:
     CPU _default { };
-    cpu.execute(0x3, memory);
+    __uint32_t executed = cpu.execute(0x4, memory);
 
     //Then:
     EXPECT_EQ(cpu.AC, 0x84);
+    EXPECT_EQ(executed, 0x4);
     EXPECT_EQ(cpu.C, _default.C);
     EXPECT_EQ(cpu.I, _default.I);
     EXPECT_EQ(cpu.D, _default.D);
@@ -248,10 +256,11 @@ TEST_F(M_TEST, ZeroPageLDA) {
 
     //When:
     CPU _default { };
-    cpu.execute(0x3, memory);
+    __uint32_t executed = cpu.execute(0x3, memory);
 
     //Then:
     EXPECT_EQ(cpu.AC, 0x84);
+    EXPECT_EQ(executed, 0x3);
     EXPECT_EQ(cpu.C, _default.C);
     EXPECT_EQ(cpu.I, _default.I);
     EXPECT_EQ(cpu.D, _default.D);
@@ -268,10 +277,11 @@ TEST_F(M_TEST, ZeroPageXLDA) {
 
     //When:
     CPU _default { };
-    cpu.execute(0x4, memory);
+    __uint32_t executed = cpu.execute(0x4, memory);
 
     //Then:
     EXPECT_EQ(cpu.AC, 0x85);
+    EXPECT_EQ(executed, 0x4);
     EXPECT_EQ(cpu.C, _default.C);
     EXPECT_EQ(cpu.I, _default.I);
     EXPECT_EQ(cpu.D, _default.D);
