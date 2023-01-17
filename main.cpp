@@ -233,13 +233,14 @@ TEST_F(M_TEST, ImmediateLDA) {
 
     //When:
     CPU _default { };
+    constexpr __uint32_t EXPECTED_CYCLES = 0x2;
     __uint32_t executed = cpu.execute(0x2, memory);
 
     //Then:
     EXPECT_TRUE(cpu.N);
     EXPECT_FALSE(cpu.Z);
     EXPECT_EQ(cpu.AC, 0x84);
-    EXPECT_EQ(executed, 0x2);
+    EXPECT_EQ(executed, EXPECTED_CYCLES);
     unmodified_flags_LDA(cpu, _default);
 }
 
@@ -247,15 +248,40 @@ TEST_F(M_TEST, AbsoluteLDA) {
     //Given:
     memory[0xFFFC] = 0xAD;
     memory[0xFFFD] = 0x42;
-    memory[0x0042] = 0x84;
+    memory[0xFFFE] = 0x84;
+    memory[0x8442] = 0x33;
 
     //When:
     CPU _default { };
+    constexpr __uint32_t EXPECTED_CYCLES = 0x4;
     __uint32_t executed = cpu.execute(0x4, memory);
 
     //Then:
-    EXPECT_EQ(cpu.AC, 0x84);
-    EXPECT_EQ(executed, 0x4);
+    EXPECT_FALSE(cpu.Z);
+    EXPECT_FALSE(cpu.N);
+    EXPECT_EQ(cpu.AC, 0x33);
+    EXPECT_EQ(executed, EXPECTED_CYCLES);
+    unmodified_flags_LDA(cpu, _default);
+}
+
+TEST_F(M_TEST, AbsoluteXLDA) {
+    //Given:
+    cpu.X = 0x5;
+    memory[0xFFFC] = 0xAD;
+    memory[0xFFFD] = 0x42;
+    memory[0xFFFE] = 0x84;
+    memory[0x8447] = 0x33;
+
+    //When:
+    CPU _default { };
+    constexpr __uint32_t EXPECTED_CYCLES = 0x4;
+    __uint32_t executed = cpu.execute(0x4, memory);
+
+    //Then:
+    EXPECT_FALSE(cpu.Z);
+    EXPECT_FALSE(cpu.N);
+    EXPECT_EQ(cpu.AC, 0x33);
+    EXPECT_EQ(executed, EXPECTED_CYCLES);
     unmodified_flags_LDA(cpu, _default);
 }
 
@@ -267,11 +293,12 @@ TEST_F(M_TEST, ZeroPageLDA) {
 
     //When:
     CPU _default { };
+    constexpr __uint32_t EXPECTED_CYCLES = 0x3;
     __uint32_t executed = cpu.execute(0x3, memory);
 
     //Then:
     EXPECT_EQ(cpu.AC, 0x84);
-    EXPECT_EQ(executed, 0x3);
+    EXPECT_EQ(executed, EXPECTED_CYCLES);
     unmodified_flags_LDA(cpu, _default);
 }
 
@@ -284,11 +311,12 @@ TEST_F(M_TEST, ZeroPageXLDA) {
 
     //When:
     CPU _default { };
+    constexpr __uint32_t EXPECTED_CYCLES = 0x4;
     __uint32_t executed = cpu.execute(0x4, memory);
 
     //Then:
     EXPECT_EQ(cpu.AC, 0x85);
-    EXPECT_EQ(executed, 0x4);
+    EXPECT_EQ(executed, EXPECTED_CYCLES);
     unmodified_flags_LDA(cpu, _default);
 }
 /* ---------------------------------- END TEST ---------------------------------- */
