@@ -206,7 +206,26 @@ public:
     ~M_TEST() override = default;
 };
 
+auto static unmodified_flags_LDA(const CPU& cpu, const CPU& _default) -> void {
+    EXPECT_EQ(cpu.C, _default.C);
+    EXPECT_EQ(cpu.I, _default.I);
+    EXPECT_EQ(cpu.D, _default.D);
+    EXPECT_EQ(cpu.B, _default.B);
+    EXPECT_EQ(cpu.V, _default.V);
+}
+
 /* --------------------------------- START TEST --------------------------------- */
+TEST_F(M_TEST, EqualsNullExecutesZeroCycles) {
+    //Given:
+    constexpr __uint32_t CYCLES = 0x0;
+
+    //When:
+    __uint32_t executed = cpu.execute(CYCLES, memory);
+
+    //Then:
+    EXPECT_EQ(executed, CYCLES);
+}
+
 TEST_F(M_TEST, ImmediateLDA) {
     //Given:
     memory[0xFFFC] = 0xA9;
@@ -221,11 +240,7 @@ TEST_F(M_TEST, ImmediateLDA) {
     EXPECT_FALSE(cpu.Z);
     EXPECT_EQ(cpu.AC, 0x84);
     EXPECT_EQ(executed, 0x2);
-    EXPECT_EQ(cpu.C, _default.C);
-    EXPECT_EQ(cpu.I, _default.I);
-    EXPECT_EQ(cpu.D, _default.D);
-    EXPECT_EQ(cpu.B, _default.B);
-    EXPECT_EQ(cpu.V, _default.V);
+    unmodified_flags_LDA(cpu, _default);
 }
 
 TEST_F(M_TEST, AbsoluteLDA) {
@@ -241,11 +256,7 @@ TEST_F(M_TEST, AbsoluteLDA) {
     //Then:
     EXPECT_EQ(cpu.AC, 0x84);
     EXPECT_EQ(executed, 0x4);
-    EXPECT_EQ(cpu.C, _default.C);
-    EXPECT_EQ(cpu.I, _default.I);
-    EXPECT_EQ(cpu.D, _default.D);
-    EXPECT_EQ(cpu.B, _default.B);
-    EXPECT_EQ(cpu.V, _default.V);
+    unmodified_flags_LDA(cpu, _default);
 }
 
 TEST_F(M_TEST, ZeroPageLDA) {
@@ -261,11 +272,7 @@ TEST_F(M_TEST, ZeroPageLDA) {
     //Then:
     EXPECT_EQ(cpu.AC, 0x84);
     EXPECT_EQ(executed, 0x3);
-    EXPECT_EQ(cpu.C, _default.C);
-    EXPECT_EQ(cpu.I, _default.I);
-    EXPECT_EQ(cpu.D, _default.D);
-    EXPECT_EQ(cpu.B, _default.B);
-    EXPECT_EQ(cpu.V, _default.V);
+    unmodified_flags_LDA(cpu, _default);
 }
 
 TEST_F(M_TEST, ZeroPageXLDA) {
@@ -282,10 +289,6 @@ TEST_F(M_TEST, ZeroPageXLDA) {
     //Then:
     EXPECT_EQ(cpu.AC, 0x85);
     EXPECT_EQ(executed, 0x4);
-    EXPECT_EQ(cpu.C, _default.C);
-    EXPECT_EQ(cpu.I, _default.I);
-    EXPECT_EQ(cpu.D, _default.D);
-    EXPECT_EQ(cpu.B, _default.B);
-    EXPECT_EQ(cpu.V, _default.V);
+    unmodified_flags_LDA(cpu, _default);
 }
 /* ---------------------------------- END TEST ---------------------------------- */
